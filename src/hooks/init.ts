@@ -31,8 +31,6 @@ export const init: Config.Hook<'init'> = async function (ctx) {
     })
   })
 
-  console.log(cmds)
-
   const id: string[] = (typeof ctx.id === 'string' ? [ctx.id] : (ctx.id! as any)) || []
   const RAWARGV = id.concat(ctx.argv || [])
 
