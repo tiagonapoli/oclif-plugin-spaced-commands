@@ -1,7 +1,7 @@
 {
   "name": "@tiagonapoli/oclif-plugin-spaced-commands",
   "description": "convert an oclif CLI to use spaced commands",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "Philipe Navarro @RasPhilCo, Tiago Nápoli @tiagonapoli",
   "bugs": "https://github.com/tiagonapoli/oclif-plugin-spaced-commands",
   "homepage": "https://github.com/tiagonapoli/oclif-plugin-spaced-commands",
