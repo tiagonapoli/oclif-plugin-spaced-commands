@@ -84,6 +84,7 @@ export const init: Config.Hook<'init'> = async function (ctx) {
 
   // overwrite config.runCommand
   ctx.config.runCommand = async (cmdId: string, argv: string[] = []) => {
+    const originalId = cmdId
     // tslint:disable-next-line:no-unused
     const [_, name] = tree.findMostProgressiveCmd(RAWARGV)
     // override the id b/c of the closure
@@ -93,7 +94,7 @@ export const init: Config.Hook<'init'> = async function (ctx) {
     const c = ctx.config.findCommand('')
     if (!c) {
       await ctx.config.runHook('command_not_found', { id: cmdId })
-      throw new CLIError(`command ${cmdId} not found`)
+      throw new CLIError(`command ${originalId} not found`)
     }
     const command = c.load()
     await ctx.config.runHook('prerun', { Command: command, argv })
