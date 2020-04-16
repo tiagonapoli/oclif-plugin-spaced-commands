@@ -1,8 +1,7 @@
-const treeify = require('treeify')
+import treeify from 'treeify'
 
 class Tree {
   nodes: { [key: string]: Tree } = {}
-  constructor() { }
 
   insert(child: string, value: Tree = new Tree()): Tree {
     this.nodes[child] = value
@@ -10,7 +9,7 @@ class Tree {
   }
 
   childSearch(key: string): Tree | undefined {
-    let k = Object.keys(this.nodes).find(k => k === key)
+    const k = Object.keys(this.nodes).find((kk) => kk === key)
     return k ? this.nodes[k] : undefined
   }
 
@@ -22,7 +21,7 @@ class Tree {
   // }
 
   findOrInsert(child: string, value: Tree = new Tree()): Tree {
-    let c = this.childSearch(child)
+    const c = this.childSearch(child)
     if (c) return c
     this.insert(child, value)
     return this.childSearch(child) as Tree
@@ -31,14 +30,14 @@ class Tree {
   // tslint:disable-next-line:no-console
   display(logger: any = console.log) {
     const addNodes = function (nodes: any) {
-      let tree: { [key: string]: any } = {}
-      for (let p of Object.keys(nodes)) {
+      const tree: { [key: string]: any } = {}
+      for (const p of Object.keys(nodes)) {
         tree[p] = addNodes(nodes[p].nodes)
       }
       return tree
     }
 
-    let tree = addNodes(this.nodes)
+    const tree = addNodes(this.nodes)
     logger(treeify.asTree(tree))
   }
 }
@@ -48,7 +47,7 @@ export default class CommandTree extends Tree {
     let cur
     let next
     for (let i = 0; i < id.length; i++) {
-      next = (next ? next : this).nodes[id[i]]
+      next = (next || this).nodes[id[i]]
       if (!next) return [cur, !i ? [] : id.slice(0, i)]
       cur = next
     }

@@ -1,48 +1,54 @@
 {
   "name": "@tiagonapoli/oclif-plugin-spaced-commands",
   "description": "convert an oclif CLI to use spaced commands",
-  "version": "0.0.2",
-  "author": "Philipe Navarro @RasPhilCo Tiago Nápoli @tiagonapoli",
+  "version": "0.0.4",
+  "author": "Philipe Navarro @RasPhilCo, Tiago Nápoli @tiagonapoli",
   "bugs": "https://github.com/tiagonapoli/oclif-plugin-spaced-commands",
+  "homepage": "https://github.com/tiagonapoli/oclif-plugin-spaced-commands",
+  "repository": "tiagonapoli/oclif-plugin-spaced-commands",
+  "keywords": [
+    "oclif-plugin"
+  ],
+  "files": [
+    "/lib",
+    "/oclif.manifest.json"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "prepack": "yarn build && yarn oclif-dev manifest && yarn oclif-dev readme",
+    "version": "yarn oclif-dev readme && git add README.md",
+    "watch": "yarn nodemon",
+    "build-clean": "rm -rf build",
+    "build-incremental": "tsc --incremental && yarn oclif-dev manifest",
+    "build": "yarn build-clean && tsc && OCLIF_COMPILATION=true yarn oclif-dev manifest",
+    "lint": "eslint ./src --cache --ext ts --config .eslintrc",
+    "format-lint": "yarn format && yarn lint",
+    "format": "prettier --config ./.prettierrc --write \"./src/**/*.{ts,tsx,js,jsx,json}\"",
+    "ci:prettier-check": "prettier --check --config ./.prettierrc \"./src/**/*.{ts,tsx,js,jsx,json}\""
+  },
   "dependencies": {
-    "@oclif/command": "^1",
-    "@oclif/config": "^1",
+    "@oclif/command": "^1.0.0",
+    "@oclif/config": "^1.0.0",
     "@oclif/errors": "^1.2.2",
     "chalk": "^2.4.1",
     "indent-string": "^3.2.0",
     "strip-ansi": "^5.0.0",
     "treeify": "^1.1.0",
-    "tslib": "^1",
+    "tslib": "^1.0.0",
     "wrap-ansi": "^4.0.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1",
-    "@oclif/plugin-help": "^2",
-    "@oclif/test": "^1",
-    "@oclif/tslint": "^1",
-    "@types/chai": "^4",
-    "@types/mocha": "^5",
-    "@types/node": "^10",
-    "chai": "^4",
-    "globby": "^8",
-    "mocha": "^5",
-    "nyc": "^12",
-    "ts-node": "^6",
-    "tslint": "^5",
-    "typescript": "^2.9"
+    "@oclif/dev-cli": "^1.0.0",
+    "@oclif/plugin-help": "^2.0.0",
+    "@types/node": "^10.0.0",
+    "eslint": "^6.8.0",
+    "eslint-config-vtex": "^12.3.2",
+    "nodemon": "^2.0.3",
+    "nodemon-notifier-cli": "https://github.com/Slessi/nodemon-notifier-cli.git",
+    "prettier": "^2.0.4",
+    "ts-node": "^6.0.0",
+    "typescript": "^3.8.3"
   },
-  "engines": {
-    "node": ">=8.0.0"
-  },
-  "files": [
-    "/lib",
-    "/oclif.manifest.json"
-  ],
-  "homepage": "https://github.com/tiagonapoli/oclif-plugin-spaced-commands",
-  "keywords": [
-    "oclif-plugin"
-  ],
-  "license": "MIT",
   "oclif": {
     "commands": "./lib/commands",
     "bin": "oclif-example",
@@ -52,14 +58,5 @@
         "./lib/hooks/init"
       ]
     }
-  },
-  "repository": "tiagonapoli/oclif-plugin-spaced-commands",
-  "scripts": {
-    "postpack": "rm -f oclif.manifest.json",
-    "posttest": "tsc -p test --noEmit && tslint -p test -t stylish",
-    "prepack": "rm -rf lib && tsc && oclif-dev manifest && oclif-dev readme",
-    "prepare": "rm -rf lib && tsc",
-    "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif-dev readme && git add README.md"
   }
 }

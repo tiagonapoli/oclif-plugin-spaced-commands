@@ -1,0 +1,20 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '**'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+            node-version: 12
+      - run: yarn install --ignore-scripts
+      - run: yarn run ci:prettier-check
+      - run: yarn run lint
