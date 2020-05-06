@@ -3,10 +3,10 @@ import { CLIError } from '@oclif/errors'
 import help from '@oclif/plugin-help'
 import CommandHelp from '@oclif/plugin-help/lib/command'
 import { renderList } from '@oclif/plugin-help/lib/list'
-import { compact } from '@oclif/plugin-help/lib/util'
+import { compact, sortBy } from '@oclif/plugin-help/lib/util'
 import chalk from 'chalk'
 import indent from 'indent-string'
-import { stripAnsi } from 'strip-ansi'
+import stripAnsi from 'strip-ansi'
 import wrap from 'wrap-ansi'
 import CommandTree from '../tree'
 
@@ -146,5 +146,29 @@ export const init: Config.Hook<'init'> = async function (ctx) {
     ]).join('\n\n')
     if (this.opts.stripAnsi) output = stripAnsi(output)
     return `${output}\n`
+  }
+
+  CommandHelp.prototype.generate = function (): string {
+    const cmd = this.command
+    const flags = sortBy(
+      Object.entries(cmd.flags || {})
+        .filter(([, v]: [any, any]) => !v.hidden)
+        .map(([k, v]: [any, any]) => {
+          v.name = k
+          return v
+        }),
+      (f: any) => [!f.char, f.char, f.name]
+    )
+    const args = (cmd.args || []).filter((a) => !a.hidden)
+    let output = compact([
+      this.usage(flags),
+      this.args(args),
+      this.flags(flags),
+      this.description(),
+      this.aliases(cmd.aliases.map((alias) => alias.replace(/:/g, ' '))),
+      this.examples(cmd.examples || (cmd as any).example),
+    ]).join('\n\n')
+    if (this.opts.stripAnsi) output = stripAnsi(output)
+    return output
   }
 }
