@@ -30,6 +30,7 @@
     "@oclif/command": "^1.0.0",
     "@oclif/config": "^1.0.0",
     "@oclif/errors": "^1.2.2",
+    "@types/treeify": "^1.0.0",
     "chalk": "^2.4.1",
     "indent-string": "^3.2.0",
     "strip-ansi": "^5.0.0",
