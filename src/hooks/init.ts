@@ -128,14 +128,17 @@ export const init: Config.Hook<'init'> = async function (ctx) {
       [
         bold('USAGE'),
         indent(
-          wrap(`$ ${this.config.bin} ${topic.name.replace(/:/g, ' ')} COMMAND`, this.opts.maxWidth - 2, { trim: false, hard: true }),
+          wrap(`$ ${this.config.bin} ${topic.name.replace(/:/g, ' ')} COMMAND`, this.opts.maxWidth - 2, {
+            trim: false,
+            hard: true,
+          }),
           2
         ),
       ].join('\n'),
-      description && ([
-        bold('DESCRIPTION'),
-        indent(wrap(description, this.opts.maxWidth - 2, {trim: false, hard: true}), 2),
-      ].join('\n')),
+      description &&
+        [bold('DESCRIPTION'), indent(wrap(description, this.opts.maxWidth - 2, { trim: false, hard: true }), 2)].join(
+          '\n'
+        ),
     ]).join('\n\n')
     if (this.opts.stripAnsi) output = stripAnsi(output)
     return output + '\n'
