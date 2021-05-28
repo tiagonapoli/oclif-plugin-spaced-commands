@@ -62,7 +62,7 @@ export const init: Config.Hook<'init'> = async function (ctx) {
   // @ts-ignore
   CommandHelp.prototype.defaultUsage = function (_: Config.Command.Flag[]): string {
     return compact([
-      this.command.id.replaceAll(':', ' '),
+      this.command.id.replace(/:/g, ' '),
       this.command.args
         .filter((a: any) => !a.hidden)
         .map((a: any) => this.arg(a))
