@@ -49,6 +49,7 @@ export const init: Config.Hook<'init'> = async function (ctx) {
   function spacesFindCommand(_: string, __: { must: true }): Config.Command.Plugin
   function spacesFindCommand(_: string, __: { must: true }): Config.Command.Plugin | undefined {
     const [node, c] = tree.findMostProgressiveCmd(RAWARGV)
+    // eslint-disable-next-line vtex/prefer-early-return
     if (node) {
       if (Object.keys((node as CommandTree).nodes).length) return
       return findCommand.apply(ctx.config, [convertName(c)])
@@ -61,7 +62,7 @@ export const init: Config.Hook<'init'> = async function (ctx) {
   // @ts-ignore
   CommandHelp.prototype.defaultUsage = function (_: Config.Command.Flag[]): string {
     return compact([
-      this.command.id.replace(':', ' '),
+      this.command.id.replaceAll(':', ' '),
       this.command.args
         .filter((a: any) => !a.hidden)
         .map((a: any) => this.arg(a))
@@ -99,6 +100,60 @@ export const init: Config.Hook<'init'> = async function (ctx) {
     const command = c.load()
     await ctx.config.runHook('prerun', { Command: command, argv })
     await command.run(argv, ctx.config)
+  }
+
+  // overwrite Help#formatCommands
+  // @ts-ignore
+  help.prototype.formatCommands = function (commands: Config.Command[]): string | undefined {
+    if (commands.length === 0) return ''
+    const body = renderList(
+      commands.map((c) => [c.id.replace(/:/g, ' '), c.description && this.render(c.description.split('\n')[0])]),
+      {
+        spacer: '\n',
+        stripAnsi: this.opts.stripAnsi,
+        maxWidth: this.opts.maxWidth - 2,
+      }
+    )
+    return [bold('COMMANDS'), indent(body, 2)].join('\n')
+  }
+
+  // overwrite Help#formatTopic
+  // @ts-ignore
+  help.prototype.formatTopic = function (topic: Config.Topic): string | undefined {
+    let description = this.render(topic.description || '')
+    const title = description.split('\n')[0]
+    description = description.split('\n').slice(1).join('\n')
+    let output = compact([
+      title,
+      [
+        bold('USAGE'),
+        indent(
+          wrap(`$ ${this.config.bin} ${topic.name.replace(/:/g, ' ')} COMMAND`, this.opts.maxWidth - 2, { trim: false, hard: true }),
+          2
+        ),
+      ].join('\n'),
+      description && ([
+        bold('DESCRIPTION'),
+        indent(wrap(description, this.opts.maxWidth - 2, {trim: false, hard: true}), 2),
+      ].join('\n')),
+    ]).join('\n\n')
+    if (this.opts.stripAnsi) output = stripAnsi(output)
+    return output + '\n'
+  }
+
+  // overwrite Help#formatTopics
+  // @ts-ignore
+  help.prototype.formatTopics = function (topics: Config.Topic[]): string | undefined {
+    if (topics.length === 0) return ''
+    const body = renderList(
+      topics.map((c) => [c.name.replace(/:/g, ' '), c.description && this.render(c.description.split('\n')[0])]),
+      {
+        spacer: '\n',
+        stripAnsi: this.opts.stripAnsi,
+        maxWidth: this.opts.maxWidth - 2,
+      }
+    )
+    return [bold('TOPICS'), indent(body, 2)].join('\n')
   }
 
   // overwrite Help#topics
@@ -148,6 +203,7 @@ export const init: Config.Hook<'init'> = async function (ctx) {
     return `${output}\n`
   }
 
+  // overwrite commandHelp.generate
   CommandHelp.prototype.generate = function (): string {
     const cmd = this.command
     const flags = sortBy(

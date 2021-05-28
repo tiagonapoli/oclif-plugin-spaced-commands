@@ -38,7 +38,7 @@ class Tree {
     }
 
     const tree = addNodes(this.nodes)
-    logger(treeify.asTree(tree))
+    logger(treeify.asTree(tree, true, true))
   }
 }
 
